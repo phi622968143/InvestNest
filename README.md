@@ -7,6 +7,7 @@ An Web app of recording stock interest for DB course final Project
 Calculating each stocks' dividend with Mutiple accounts.
 
 # For Dev
+Each application directory has a model for the backend database table, views for the backend API, and templates for the frontend. The s_a directory is special, serving as a summary. setting manages the settings for each application. urls acts as the main entry point for routing. This is roughly how it works.
 ## Fronted<->Backend
 
 flow - To app views -> api data -> templates -> using data -> Add urls (url,api)
