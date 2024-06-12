@@ -161,16 +161,10 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
-
-from django.shortcuts import render, redirect
+    return redirect('index')
 
 def index(request):
-    if not request.user.is_authenticated:
-        return render(request, 'index.html')
-    user_id = request.user.id
     context = {
-        'user_id': user_id,
+        'user': request.user
     }
     return render(request, 'index.html', context)
-
