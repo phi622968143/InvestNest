@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Portfolio</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 800px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+        .container h2 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table, th, td { border: 1px solid #ccc; }
+        th, td { padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .button:hover { background-color: #45a049; }
+        .icon-button { background: none; border: none; cursor: pointer; padding: 5px; color: #007bff; }
+        .form-inline { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>{{ user.name }}'s Portfolio</h2>
+        <form method="post" class="form-inline">
+            {% csrf_token %}
+            <input type="hidden" name="add_account">
+            <label for="bank_name">Account Name:</label>
+            <input type="text" id="bank_name" name="bank_name" required>
+            <label for="acc_balance">Account Balance:</label>
+            <input type="number" step="0.01" id="acc_balance" name="acc_balance" required>
+            <label for="open_date">Open Date:</label>
+            <input type="date" id="open_date" name="open_date" required>
+            <button type="submit" class="button">Add Account</button>
+        </form>
+        <table>
+            <tr>
+                <th>Account ID</th>
+                <th>Account Name</th>
+                <th>Account Balance</th>
+                <th>Open Date</th>
+                <th>Actions</th>
+            </tr>
+            {% for account in accounts %}
+            <tr>
+                <td>{{ account.acc_id }}</td>
+                <td>{{ account.bank_name }}</td>
+                <td>{{ account.acc_balance }}</td>
+                <td>{{ account.open_date }}</td>
+                <td>
+                    <a class="button" href="{% url 'account_detail' account_id=account.acc_id %}">View Holdings</a>
+                    <form method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="delete_account" value="true">
+                        <input type="hidden" name="account_id" value="{{ account.acc_id }}">
+                        <button type="submit" class="icon-button">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                    <form method="post" class="form-inline" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="update_account" value="true">
+                        <input type="hidden" name="account_id" value="{{ account.acc_id }}">
+                        <input type="text" name="bank_name" value="{{ account.bank_name }}" required>
+                        <input type="number" step="0.01" name="acc_balance" value="{{ account.acc_balance }}" required>
+                        <input type="date" name="open_date" value="{{ account.open_date }}" required>
+                        <button type="submit" class="icon-button">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

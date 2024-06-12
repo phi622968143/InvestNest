@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Index</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            padding: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #fff;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 9px #999;
+            margin: 10px;
+        }
+        .button:hover {
+            background-color: #3e8e41;
+        }
+        .button:active {
+            background-color: #3e8e41;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to InvestNest</h1>
+        {% if user.is_authenticated %}
+            <button class="button" onclick="location.href='{% url 'portfolio' user_id=user.id %}'">Go to Portfolio</button>
+            <button class="button" onclick="location.href='{% url 'logout' %}'">Logout</button>
+        {% else %}
+            <button class="button" onclick="location.href='{% url 'login' %}'">Login</button>
+            <button class="button" onclick="location.href='{% url 'register' %}'">Register</button>
+        {% endif %}
+    </div>
+</body>
+</html>

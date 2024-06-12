@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Account Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 800px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+        .container h2 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table, th, td { border: 1px solid #ccc; }
+        th, td { padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .button:hover { background-color: #45a049; }
+        .icon-button { background: none; border: none; cursor: pointer; padding: 5px; color: #007bff; }
+        .form-inline { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Account: {{ account.bank_name }}</h2>
+        <form method="post" class="form-inline">
+            {% csrf_token %}
+            <input type="hidden" name="add_trade">
+            <label for="stock_name">Stock Name:</label>
+            <input type="text" id="stock_name" name="stock_name" required>
+            <label for="stock_code">Stock Code:</label>
+            <input type="text" id="stock_code" name="stock_code" required>
+            <label for="action">Action:</label>
+            <select id="action" name="action" required>
+                <option value="buy">Buy</option>
+                <option value="sell">Sell</option>
+            </select>
+            <label for="price">Price:</label>
+            <input type="number" step="0.01" id="price" name="price" required>
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" required>
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+            <button type="submit" class="button">Add Trade</button>
+        </form>
+        
+        <form method="post" class="form-inline" style="margin-top: 20px;">
+            {% csrf_token %}
+            <input type="hidden" name="add_dividend">
+            <label for="stock_name">Stock Name:</label>
+            <input type="text" id="stock_name" name="stock_name" required>
+            <label for="stock_code">Stock Code:</label>
+            <input type="text" id="stock_code" name="stock_code" required>
+            <label for="dividend_per_share">Dividend Per Share:</label>
+            <input type="number" step="0.01" id="dividend_per_share" name="dividend_per_share" required>
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+            <button type="submit" class="button">Add Dividend</button>
+        </form>
+
+        <table>
+            <tr>
+                <th>Stock Name</th>
+                <th>Stock Code</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Dividend Yield (%)</th>
+                <th>Actions</th>
+            </tr>
+            {% for trade in trades %}
+            <tr>
+                <td>{{ trade.stock_name }}</td>
+                <td>{{ trade.stock_code }}</td>
+                <td>{{ trade.quantity }}</td>
+                <td>{{ trade.price }}</td>
+                <td>{{ trade.dividend_yield }}</td>
+                <td>
+                    <form method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="delete_trade" value="true">
+                        <input type="hidden" name="trade_id" value="{{ trade.trade_id }}">
+                        <button type="submit" class="icon-button">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                    <form method="post" class="form-inline" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="update_trade" value="true">
+                        <input type="hidden" name="trade_id" value="{{ trade.trade_id }}">
+                        <input type="text" name="stock_name" value="{{ trade.stock_name }}" required>
+                        <input type="text" name="stock_code" value="{{ trade.stock_code }}" required>
+                        <select name="action" required>
+                            <option value="buy" {% if trade.action == 'buy' %}selected{% endif %}>Buy</option>
+                            <option value="sell" {% if trade.action == 'sell' %}selected{% endif %}>Sell</option>
+                        </select>
+                        <input type="number" name="price" value="{{ trade.price }}" required>
+                        <input type="number" name="quantity" value="{{ trade.quantity }}" required>
+                        <input type="date" name="date" value="{{ trade.date }}" required>
+                        <button type="submit" class="icon-button">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h3>Total Dividend: {{ total_dividend }}</h3>
+        <h3>Total Cost: {{ total_cost }}</h3>
+        <h3>Overall Yield: {{ overall_yield }}%</h3>
+        <a class="button" href="{% url 'portfolio' user_id=account.user.id %}">Back to Portfolio</a>
+    </div>
+</body>
+</html>
